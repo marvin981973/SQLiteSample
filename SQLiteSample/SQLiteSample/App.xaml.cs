@@ -1,3 +1,5 @@
+using SQLiteSample.Services;
+using SQLiteSample.Views;
 using System;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -7,14 +9,30 @@ namespace SQLiteSample
 {
 	public partial class App : Application
 	{
-		public App ()
-		{
-			InitializeComponent();
+        IContactRepository _contactRepository;
+        public App()
+        {
+            InitializeComponent();
+            _contactRepository = new ContactRepository();
+            OnAppStart();
+        }
 
-			MainPage = new MainPage();
-		}
+        public void OnAppStart()
+        {
+            var getLocalDB = _contactRepository.GetAllContactsData();
 
-		protected override void OnStart ()
+            if (getLocalDB.Count > 0)
+            {
+                MainPage = new NavigationPage(new ContactList());
+            }
+            else
+            {
+                MainPage = new NavigationPage(new AddContact());
+            }
+
+        }
+
+        protected override void OnStart ()
 		{
 			// Handle when your app starts
 		}
